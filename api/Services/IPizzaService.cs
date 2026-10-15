@@ -5,10 +5,10 @@ namespace ContosoPizza.Services;
 
 public interface IPizzaService
 {
-    List<Pizza> GetAll();
-    Pizza? Get(int id);
-    void Add(Pizza pizza);
-    void Update(Pizza pizza);
-    void Delete(int id);
+    Task<List<Pizza>> GetAllAsync();
+    Task<Pizza?> GetAsync(int id);
+    Task AddAsync(Pizza pizza);
+    Task UpdateAsync(Pizza pizza);
+    Task DeleteAsync(int id);
 
 }

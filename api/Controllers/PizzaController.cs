@@ -17,15 +17,16 @@ public class PizzaController : ControllerBase
     }
 
     [HttpGet]
-    public ActionResult<List<Pizza>> GetAll() => _service.GetAll();
+    public async Task<ActionResult<List<Pizza>>> GetAll() => 
+        await _service.GetAllAsync();
 
 
     [HttpGet("{id}")]
-    public ActionResult<Pizza> Get(int id)
+    public async Task<ActionResult<Pizza>> Get(int id)
     {
-        var pizza = _service.Get(id);
+        var pizza = await _service.GetAsync(id);
 
-        if (pizza == null)
+        if (pizza is null)
             return NotFound();
 
         return pizza;
@@ -33,39 +34,39 @@ public class PizzaController : ControllerBase
 
 
     [HttpPost]
-    public IActionResult Create(Pizza pizza)
+    public async Task<IActionResult> Create(Pizza pizza)
     {
-        _service.Add(pizza);
+        await _service.AddAsync(pizza);
         return CreatedAtAction(nameof(Get), new { id = pizza.Id }, pizza);
     }
 
 
     [HttpPut("{id}")]
-    public IActionResult Update(int id, Pizza pizza)
+    public async Task<IActionResult> Update(int id, Pizza pizza)
     {
         if (id != pizza.Id)
             return BadRequest();
 
 
-        var existingPizza = _service.Get(id);
+        var existingPizza = await _service.GetAsync(id);
         if (existingPizza is null)
             return NotFound();
 
 
-        _service.Update(pizza);
+        await _service.UpdateAsync(pizza);
 
         return NoContent();
     }
 
     [HttpDelete("{id}")]
-    public IActionResult Delete(int id)
+    public async Task<IActionResult> Delete(int id)
     {
-        var pizza = _service.Get(id);
+        var pizza = await _service.GetAsync(id);
 
         if (pizza is null)
             return NotFound();
 
-        _service.Delete(id);
+        await _service.DeleteAsync(id);
 
         return NoContent();
     }

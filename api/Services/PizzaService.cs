@@ -9,33 +9,35 @@ public class PizzaService : IPizzaService
     private readonly PizzaContext _context;
     public PizzaService(PizzaContext context)
     {
-        context = _context;
+        _context = context;
     }
 
-    public List<Pizza> GetAll() => _context.Pizzas.AsNoTracking().ToList();
+    public async Task<List<Pizza>> GetAllAsync() => 
+        await _context.Pizzas.AsNoTracking().ToListAsync();
     
-    public Pizza? Get(int id) => _context.Pizzas.AsNoTracking().FirstOrDefault(eachPizza => eachPizza.Id == id);
+    public async Task<Pizza?> GetAsync(int id) => 
+        await _context.Pizzas.AsNoTracking().FirstOrDefaultAsync(eachPizza => eachPizza.Id == id);
 
-    public void Add(Pizza pizza)
+    public async Task AddAsync(Pizza pizza)
     {
         _context.Pizzas.Add(pizza);
-        _context.SaveChanges();
+        await _context.SaveChangesAsync();
     }
 
-    public void Delete(int id)
+    public async Task DeleteAsync(int id)
     {
-        var pizza = _context.Pizzas.Find(id);
+        var pizza = await _context.Pizzas.FindAsync(id);
 
         if (pizza is null)
             return;
 
         _context.Pizzas.Remove(pizza);
-        _context.SaveChanges();
+        await _context.SaveChangesAsync();
     }
 
-    public void Update(Pizza pizza)
+    public async Task UpdateAsync(Pizza pizza)
     {
         _context.Pizzas.Update(pizza);
-        _context.SaveChanges();
+        await _context.SaveChangesAsync();
     }
 }

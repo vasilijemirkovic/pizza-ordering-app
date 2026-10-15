@@ -82,6 +82,9 @@ StyleCopReport.xml
 *.meta
 *.obj
 *.bin
+*.db
+*.db-shm
+*.db-wal
 *.iobj
 *.pch
 *.pdb

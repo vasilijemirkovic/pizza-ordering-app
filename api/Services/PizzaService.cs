@@ -1,47 +1,41 @@
+using ContosoPizza.Data;
 using ContosoPizza.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace ContosoPizza.Services;
 
 public class PizzaService : IPizzaService
 {
-    private readonly List<Pizza> _pizzas;
-    private int nextId = 3;
-    public PizzaService()
+    private readonly PizzaContext _context;
+    public PizzaService(PizzaContext context)
     {
-        _pizzas = new List<Pizza>
-        {
-            new Pizza { Id = 1, Name = "Classic Italian", IsGlutenFree = false,
-            Ingredients = new() {"tomato sauce", "mozzarella", "basil", "olive oil"} },
-            new Pizza { Id = 2, Name = "Veggie", IsGlutenFree = true,
-            Ingredients = new() {"tomato sauce", "paprika", "mushroom", "olive", "olive oil"} }
-        };
+        context = _context;
     }
 
-    public List<Pizza> GetAll() => _pizzas;
-
-    public Pizza? Get(int id) => _pizzas.FirstOrDefault(p => p.Id == id);
+    public List<Pizza> GetAll() => _context.Pizzas.AsNoTracking().ToList();
+    
+    public Pizza? Get(int id) => _context.Pizzas.AsNoTracking().FirstOrDefault(eachPizza => eachPizza.Id == id);
 
     public void Add(Pizza pizza)
     {
-        pizza.Id = nextId++;
-        _pizzas.Add(pizza);
+        _context.Pizzas.Add(pizza);
+        _context.SaveChanges();
     }
 
     public void Delete(int id)
     {
-        var pizza = Get(id);
+        var pizza = _context.Pizzas.Find(id);
+
         if (pizza is null)
             return;
 
-        _pizzas.Remove(pizza);
+        _context.Pizzas.Remove(pizza);
+        _context.SaveChanges();
     }
 
     public void Update(Pizza pizza)
     {
-        var index = _pizzas.FindIndex(p => p.Id == pizza.Id);
-        if (index == -1)
-            return;
-
-        _pizzas[index] = pizza;
+        _context.Pizzas.Update(pizza);
+        _context.SaveChanges();
     }
 }

@@ -1,3 +1,4 @@
+using ContosoPizza.Infrastructure;
 using ContosoPizza.Data;
 using ContosoPizza.Services;
 using Microsoft.EntityFrameworkCore;
@@ -14,8 +15,11 @@ builder.Services.AddDbContext<PizzaContext>(options => options.UseSqlite(builder
 
 builder.Services.AddScoped<IPizzaService, PizzaService>();
 
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+builder.Services.AddProblemDetails();
 
 var app = builder.Build();
+
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -23,6 +27,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseExceptionHandler();
 
 app.UseHttpsRedirection();
 

@@ -1,5 +1,5 @@
 using ContosoPizza.Data;
-using ContosoPizza.Models;
+using ContosoPizza.Dtos;
 using Microsoft.EntityFrameworkCore;
 
 namespace ContosoPizza.Services;
@@ -12,32 +12,53 @@ public class PizzaService : IPizzaService
         _context = context;
     }
 
-    public async Task<List<Pizza>> GetAllAsync() => 
-        await _context.Pizzas.AsNoTracking().ToListAsync();
+    public async Task<List<PizzaResponseDto>> GetAllAsync() =>
+        await _context.Pizzas
+        .AsNoTracking()
+        .Select(p => p.ToResponse())
+        .ToListAsync();
     
-    public async Task<Pizza?> GetAsync(int id) => 
-        await _context.Pizzas.AsNoTracking().FirstOrDefaultAsync(eachPizza => eachPizza.Id == id);
-
-    public async Task AddAsync(Pizza pizza)
+    public async Task<PizzaResponseDto?> GetAsync(int id)
     {
-        _context.Pizzas.Add(pizza);
-        await _context.SaveChangesAsync();
+        var pizza = await _context.Pizzas
+        .AsNoTracking()
+        .FirstOrDefaultAsync(eachPizza => eachPizza.Id == id);
+
+        return pizza?.ToResponse();
     }
 
-    public async Task DeleteAsync(int id)
+    public async Task<PizzaResponseDto> AddAsync(PizzaRequestDto dto)
+    {
+        var pizza = dto.ToEntity();
+        _context.Pizzas.Add(pizza);
+        await _context.SaveChangesAsync();
+
+        return pizza.ToResponse();
+    }
+
+    public async Task<bool> DeleteAsync(int id)
     {
         var pizza = await _context.Pizzas.FindAsync(id);
 
         if (pizza is null)
-            return;
+            return false;
 
         _context.Pizzas.Remove(pizza);
         await _context.SaveChangesAsync();
+        return true;
     }
 
-    public async Task UpdateAsync(Pizza pizza)
+    public async Task<bool> UpdateAsync(int id, PizzaRequestDto dto)
     {
-        _context.Pizzas.Update(pizza);
+        var pizza = await _context.Pizzas.FindAsync(id);
+        if(pizza is null)
+            return false;
+        
+        pizza.Name = dto.Name;
+        pizza.IsGlutenFree = dto.IsGlutenFree;
+        pizza.Ingredients = dto.Ingredients;
+        
         await _context.SaveChangesAsync();
+        return true;
     }
 }

@@ -17,7 +17,7 @@ public class PizzaController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<List<PizzaResponseDto>>> GetAll() => 
+    public async Task<ActionResult<List<PizzaResponseDto>>> GetAll() =>
         await _service.GetAllAsync();
 
 

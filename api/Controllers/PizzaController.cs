@@ -1,6 +1,6 @@
-using ContosoPizza.Models;
 using ContosoPizza.Services;
 using Microsoft.AspNetCore.Mvc;
+using ContosoPizza.Dtos;
 
 namespace ContosoPizza.Controllers;
 
@@ -17,12 +17,12 @@ public class PizzaController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<List<Pizza>>> GetAll() => 
+    public async Task<ActionResult<List<PizzaResponseDto>>> GetAll() => 
         await _service.GetAllAsync();
 
 
     [HttpGet("{id}")]
-    public async Task<ActionResult<Pizza>> Get(int id)
+    public async Task<ActionResult<PizzaResponseDto>> Get(int id)
     {
         var pizza = await _service.GetAsync(id);
 
@@ -34,41 +34,24 @@ public class PizzaController : ControllerBase
 
 
     [HttpPost]
-    public async Task<IActionResult> Create(Pizza pizza)
+    public async Task<ActionResult<PizzaResponseDto>> Create(PizzaRequestDto dto)
     {
-        await _service.AddAsync(pizza);
-        return CreatedAtAction(nameof(Get), new { id = pizza.Id }, pizza);
+        var created = await _service.AddAsync(dto);
+        return CreatedAtAction(nameof(Get), new { id = created.Id }, created);
     }
 
 
     [HttpPut("{id}")]
-    public async Task<IActionResult> Update(int id, Pizza pizza)
+    public async Task<IActionResult> Update(int id, PizzaRequestDto dto)
     {
-        if (id != pizza.Id)
-            return BadRequest();
-
-
-        var existingPizza = await _service.GetAsync(id);
-        if (existingPizza is null)
-            return NotFound();
-
-
-        await _service.UpdateAsync(pizza);
-
-        return NoContent();
+        var updated = await _service.UpdateAsync(id, dto);
+        return updated? NoContent() : NotFound();
     }
 
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(int id)
     {
-        var pizza = await _service.GetAsync(id);
-
-        if (pizza is null)
-            return NotFound();
-
-        await _service.DeleteAsync(id);
-
-        return NoContent();
+        var deleted = await _service.DeleteAsync(id);
+        return deleted? NoContent() : NotFound();
     }
-
 }

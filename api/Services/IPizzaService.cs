@@ -1,14 +1,12 @@
-using ContosoPizza.Models;
+using ContosoPizza.Dtos;
 
 namespace ContosoPizza.Services;
 
-
 public interface IPizzaService
 {
-    Task<List<Pizza>> GetAllAsync();
-    Task<Pizza?> GetAsync(int id);
-    Task AddAsync(Pizza pizza);
-    Task UpdateAsync(Pizza pizza);
-    Task DeleteAsync(int id);
-
+    Task<List<PizzaResponseDto>> GetAllAsync();
+    Task<PizzaResponseDto?> GetAsync(int id);
+    Task<PizzaResponseDto> AddAsync(PizzaRequestDto dto);
+    Task<bool> UpdateAsync(int id, PizzaRequestDto dto);
+    Task<bool> DeleteAsync(int id);
 }

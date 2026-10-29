@@ -22,6 +22,8 @@ public class PizzaController : ControllerBase
 
 
     [HttpGet("{id}")]
+    [ProducesResponseType<PizzaResponseDto>(StatusCodes.Status200OK)]
+    [ProducesResponseType<PizzaResponseDto>(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<PizzaResponseDto>> Get(int id)
     {
         var pizza = await _service.GetAsync(id);

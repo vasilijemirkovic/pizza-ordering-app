@@ -3,7 +3,7 @@ using ContosoPizza.Dtos;
 using ContosoPizza.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
-
+using System.Security.Claims;
 
 namespace ContosoPizza.Services;
 
@@ -12,10 +12,13 @@ public class AuthService : IAuthService
 {
     private readonly PizzaContext _context;
     private readonly IPasswordHasher<User> _passwordHasher;
-    public AuthService(PizzaContext context, IPasswordHasher<User> passwordHasher)
+    private readonly IConfiguration _configuration;
+
+    public AuthService(PizzaContext context, IPasswordHasher<User> passwordHasher, IConfiguration configuration)
     {
         _context = context;
         _passwordHasher = passwordHasher;
+        _configuration = configuration;
     }
 
     public async Task<bool> RegisterUserAsync(RegisterRequestDto dto)
@@ -34,4 +37,25 @@ public class AuthService : IAuthService
 
         return true;
     }
+
+    public async Task<string?> LoginUserAsync(LoginRequestDto dto)
+    {
+        var user = await _context.Users
+        .AsNoTracking()
+        .FirstOrDefaultAsync(eachUser => eachUser.Username == dto.Username);
+
+        if (user is null) return null;
+
+        var exactPassword = _passwordHasher.VerifyHashedPassword(user, user.PasswordHash, dto.Password);
+
+        if(exactPassword == PasswordVerificationResult.Failed) return null;
+
+        return GenerateToken(user);
+    }
+
+    private string GenerateToken(User user)
+    {
+        return "test";
+    }
+
 }

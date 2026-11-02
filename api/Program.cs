@@ -80,6 +80,17 @@ builder.Services.AddAuthorization();
 
 var app = builder.Build();
 
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+
+    PizzaContext pizzaContext = services.GetRequiredService<PizzaContext>();
+    IPasswordHasher<User> passwordHasher = services.GetRequiredService<IPasswordHasher<User>>();
+    IConfiguration configuration = services.GetRequiredService<IConfiguration>();
+
+    await AdminSeeder.SeedAdminAsync(pizzaContext, passwordHasher, configuration);
+}
+
 app.UseExceptionHandler();
 
 // Configure the HTTP request pipeline.

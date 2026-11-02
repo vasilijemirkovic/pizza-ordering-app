@@ -1,10 +1,12 @@
 using ContosoPizza.Services;
 using Microsoft.AspNetCore.Mvc;
 using ContosoPizza.Dtos;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ContosoPizza.Controllers;
 
 [ApiController]
+[Authorize(Roles = "Admin")]
 [Route("[controller]")]
 public class PizzaController : ControllerBase
 {
@@ -17,13 +19,15 @@ public class PizzaController : ControllerBase
     }
 
     [HttpGet]
+    [AllowAnonymous]
     public async Task<ActionResult<List<PizzaResponseDto>>> GetAll() =>
         await _service.GetAllAsync();
 
 
     [HttpGet("{id}")]
+    [AllowAnonymous]
     [ProducesResponseType<PizzaResponseDto>(StatusCodes.Status200OK)]
-    [ProducesResponseType<PizzaResponseDto>(StatusCodes.Status404NotFound)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<PizzaResponseDto>> Get(int id)
     {
         var pizza = await _service.GetAsync(id);
@@ -47,13 +51,13 @@ public class PizzaController : ControllerBase
     public async Task<IActionResult> Update(int id, PizzaRequestDto dto)
     {
         var updated = await _service.UpdateAsync(id, dto);
-        return updated? NoContent() : NotFound();
+        return updated ? NoContent() : NotFound();
     }
 
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(int id)
     {
         var deleted = await _service.DeleteAsync(id);
-        return deleted? NoContent() : NotFound();
+        return deleted ? NoContent() : NotFound();
     }
 }

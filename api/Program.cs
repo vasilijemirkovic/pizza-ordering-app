@@ -80,6 +80,9 @@ builder.Services.AddAuthorization();
 
 var app = builder.Build();
 
+
+
+
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
@@ -87,6 +90,8 @@ using (var scope = app.Services.CreateScope())
     PizzaContext pizzaContext = services.GetRequiredService<PizzaContext>();
     IPasswordHasher<User> passwordHasher = services.GetRequiredService<IPasswordHasher<User>>();
     IConfiguration configuration = services.GetRequiredService<IConfiguration>();
+
+    await pizzaContext.Database.MigrateAsync();
 
     await AdminSeeder.SeedAdminAsync(pizzaContext, passwordHasher, configuration);
 }

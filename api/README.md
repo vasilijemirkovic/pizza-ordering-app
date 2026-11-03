@@ -28,3 +28,38 @@ A frontend client is currently in progress.
 - [.NET 10 SDK](https://dotnet.microsoft.com/download)
 - Git
 - Any code editor (Visual Studio, VS Code, Rider...)
+
+
+### Setup
+
+1. Clone the repository and navigate to the API project:
+   ```
+   git clone https://github.com/vasilijemirkovic/pizza-ordering-app.git
+   cd pizza-ordering-app/api
+   ```
+
+2. Configure user secrets:
+   ```
+   dotnet user-secrets set "Jwt:Key" "your-secret-key-at-least-32-characters-long"
+   dotnet user-secrets set "Admin:Username" "admin"
+   dotnet user-secrets set "Admin:Password" "your-strong-password"
+   ```
+   - `Jwt:Key` is **required** and must be at least 32 characters long (HMAC-SHA256).
+   - `Admin:Username` and `Admin:Password` are **optional**. If set, an admin account is created on first startup.
+
+3. Run the application:
+   ```
+   dotnet run
+   ```
+   The SQLite database is created and all migrations are applied automatically on startup.
+
+4. Open Swagger UI at `http://localhost:5153/swagger`.
+
+
+## API Endpoints
+
+## Authentication
+
+## Project Structure
+
+## Roadmap

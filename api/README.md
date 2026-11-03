@@ -107,3 +107,10 @@ api/
 **Project structure is going to be changed after the implementation of the unit tests.**
 
 ## Roadmap
+- [ ] Unit tests with xUnit
+- [ ] Frontend client
+- [ ] Deployment
+
+## Acknowledgements
+
+This project started from Microsoft's ContosoPizza tutorial and was extended with a database, DTOs, validation, global error handling, and JWT authentication with role-based authorization.

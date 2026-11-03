@@ -67,6 +67,13 @@ A frontend client is currently in progress.
 | PUT    | `/Pizza/{id}` | Update an existing pizza | Admin only |
 | DELETE | `/Pizza/{id}` | Delete a pizza           | Admin only |
 
+### Authentication
+| Method | Endpoint         | Description                      | Access |
+|--------|------------------|----------------------------------|--------|
+| POST   | `/Auth/register` | Register a new user              | Public |
+| POST   | `/Auth/login`    | Log in and receive a JWT token   | Public |
+
+
 ## Authentication
 
 ## Project Structure

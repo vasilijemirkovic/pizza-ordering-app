@@ -50,6 +50,7 @@ namespace ContosoPizza.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Role")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Username")

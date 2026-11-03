@@ -93,5 +93,17 @@ Tokens expire after 45 minutes. Requests without a valid token return `401 Unaut
 
 
 ## Project Structure
+```
+api/
+├── Controllers/      # API endpoints (Pizza, Auth)
+├── Data/             # DbContext and admin seeding
+├── Dtos/             # Request/response models and mapping
+├── Infrastructure/   # Global exception handler
+├── Migrations/       # EF Core database migrations
+├── Models/           # Database entities (Pizza, User)
+├── Services/         # Business logic (pizza and auth services)
+└── Program.cs        # Application configuration and middleware pipeline
+```
+**Project structure is going to be changed after the implementation of the unit tests.**
 
 ## Roadmap

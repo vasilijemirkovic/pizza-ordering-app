@@ -76,6 +76,22 @@ A frontend client is currently in progress.
 
 ## Authentication
 
+The API uses JWT Bearer authentication with role-based authorization.
+
+1. Register a user via `POST /Auth/register`. New users are assigned the `User` role.
+2. Log in via `POST /Auth/login` to receive a token:
+   ```json
+   { "token": "eyJhbGciOiJIUzI1NiIs..." }
+   ```
+3. Send the token in the `Authorization` header with each request to a protected endpoint:
+   ```
+   Authorization: Bearer <user-token>
+   ```
+4. In Swagger UI, click **Authorize** and paste the token.
+
+Tokens expire after 45 minutes. Requests without a valid token return `401 Unauthorized`; requests from users without the required role return `403 Forbidden`.
+
+
 ## Project Structure
 
 ## Roadmap

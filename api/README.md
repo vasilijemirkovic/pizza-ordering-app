@@ -58,6 +58,15 @@ A frontend client is currently in progress.
 
 ## API Endpoints
 
+### Pizzas
+| Method | Endpoint      | Description              | Access     |
+|--------|---------------|--------------------------|------------|
+| GET    | `/Pizza`      | Get all pizzas           | Public     |
+| GET    | `/Pizza/{id}` | Get a pizza by ID        | Public     |
+| POST   | `/Pizza`      | Add a new pizza          | Admin only |
+| PUT    | `/Pizza/{id}` | Update an existing pizza | Admin only |
+| DELETE | `/Pizza/{id}` | Delete a pizza           | Admin only |
+
 ## Authentication
 
 ## Project Structure

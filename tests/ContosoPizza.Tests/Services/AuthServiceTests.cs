@@ -51,13 +51,13 @@ public class AuthServiceTests : IDisposable
     {
         RegisterRequestDto dto = new RegisterRequestDto { Username = "TestName", Password = "TestPassword"};
 
-        bool res = await _service.RegisterUserAsync(dto);
+        bool registerResult = await _service.RegisterUserAsync(dto);
 
         var user = await _context.Users
             .AsNoTracking()
             .FirstOrDefaultAsync(eachUser => eachUser.Username == dto.Username);
 
-        Assert.True(res);
+        Assert.True(registerResult);
         Assert.NotNull(user);
         Assert.Equal("User", user.Role);
         Assert.NotEqual(dto.Password, user.PasswordHash);
@@ -70,12 +70,24 @@ public class AuthServiceTests : IDisposable
 
         await _service.RegisterUserAsync(dto);
 
-        bool res = await _service.RegisterUserAsync(dto);
+        bool registerResult = await _service.RegisterUserAsync(dto);
 
         var userCount = await _context.Users
             .CountAsync(eachUser => eachUser.Username == dto.Username);
 
-        Assert.False(res);
+        Assert.False(registerResult);
         Assert.Equal(1, userCount);
+    }
+
+    [Fact]
+    public async Task LoginUserAsync_ValidCredentials_ReturnsToken()
+    {
+        RegisterRequestDto registerRequestDto = new RegisterRequestDto { Username = "TestName", Password = "TestPassword"};
+        await _service.RegisterUserAsync(registerRequestDto);
+
+        LoginRequestDto loginRequestDto = new LoginRequestDto { Username = "TestName", Password = "TestPassword"};
+        string? resultToken = await _service.LoginUserAsync(loginRequestDto);
+
+        Assert.False(string.IsNullOrEmpty(resultToken));
     }
 }

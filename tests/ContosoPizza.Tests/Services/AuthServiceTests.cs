@@ -16,7 +16,8 @@ public class AuthServiceTests : IDisposable
     private readonly PizzaContext _context;
     private readonly AuthService _service;
 
-    public AuthServiceTests(){
+    public AuthServiceTests()
+    {
 
         _connection = new SqliteConnection("DataSource=:memory:");
         _connection.Open();
@@ -91,7 +92,6 @@ public class AuthServiceTests : IDisposable
         Assert.False(string.IsNullOrEmpty(resultToken));
     }
 
-    
     [Fact]
     public async Task LoginUserAsync_WrongUsername_ReturnsNull()
     {
@@ -104,4 +104,15 @@ public class AuthServiceTests : IDisposable
         Assert.Null(resultToken);
     }
 
+    [Fact]
+    public async Task LoginUserAsync_WrongPassword_ReturnsNull()
+    {
+        RegisterRequestDto registerRequestDto = new RegisterRequestDto { Username = "TestName", Password = "TestPassword"};
+        await _service.RegisterUserAsync(registerRequestDto);
+
+        LoginRequestDto loginRequestDto = new LoginRequestDto { Username = "TestName", Password = "TestPassword1"};
+        string? resultToken = await _service.LoginUserAsync(loginRequestDto);
+
+        Assert.Null(resultToken);
+    }
 }

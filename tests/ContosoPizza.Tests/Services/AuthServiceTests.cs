@@ -115,4 +115,13 @@ public class AuthServiceTests : IDisposable
 
         Assert.Null(resultToken);
     }
+
+    [Fact]
+    public async Task LoginUserAsync_UserNotExists_ReturnsNull()
+    {
+        LoginRequestDto loginRequestDto = new LoginRequestDto { Username = "TestName", Password = "TestPassword"};
+        string? resultToken = await _service.LoginUserAsync(loginRequestDto);
+
+        Assert.Null(resultToken);
+    }
 }

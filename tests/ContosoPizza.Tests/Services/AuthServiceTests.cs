@@ -1,4 +1,6 @@
 
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using ContosoPizza.Data;
 using ContosoPizza.Dtos;
 using ContosoPizza.Models;
@@ -89,7 +91,11 @@ public class AuthServiceTests : IDisposable
         LoginRequestDto loginRequestDto = new LoginRequestDto { Username = "TestName", Password = "TestPassword"};
         string? resultToken = await _service.LoginUserAsync(loginRequestDto);
 
+        var token = new JwtSecurityTokenHandler().ReadJwtToken(resultToken);
+
         Assert.False(string.IsNullOrEmpty(resultToken));
+        Assert.Equal("User", token.Claims.FirstOrDefault(eachClaim => eachClaim.Type == ClaimTypes.Role)?.Value);
+        Assert.Equal("TestName", token.Claims.FirstOrDefault(eachClaim => eachClaim.Type == ClaimTypes.Name)?.Value);
     }
 
     [Fact]

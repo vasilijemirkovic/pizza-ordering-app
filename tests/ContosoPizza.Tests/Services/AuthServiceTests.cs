@@ -1,5 +1,6 @@
 
 using ContosoPizza.Data;
+using ContosoPizza.Dtos;
 using ContosoPizza.Models;
 using ContosoPizza.Services;
 using Microsoft.AspNetCore.Identity;
@@ -43,5 +44,38 @@ public class AuthServiceTests : IDisposable
     {
         _context.Dispose();
         _connection.Dispose();
+    }
+
+    [Fact]
+    public async Task RegisterUserAsync_NewUsername_ReturnsTrueAndSavesUser()
+    {
+        RegisterRequestDto dto = new RegisterRequestDto { Username = "TestName", Password = "TestPassword"};
+
+        bool res = await _service.RegisterUserAsync(dto);
+
+        var user = await _context.Users
+            .AsNoTracking()
+            .FirstOrDefaultAsync(eachUser => eachUser.Username == dto.Username);
+
+        Assert.True(res);
+        Assert.NotNull(user);
+        Assert.Equal("User", user.Role);
+        Assert.NotEqual(dto.Password, user.PasswordHash);
+    }
+
+    [Fact]
+    public async Task RegisterUserAsync_ExistingUsername_ReturnsFalse()
+    {
+        RegisterRequestDto dto = new RegisterRequestDto { Username = "TestName", Password = "TestPassword"};
+
+        await _service.RegisterUserAsync(dto);
+
+        bool res = await _service.RegisterUserAsync(dto);
+
+        var userCount = await _context.Users
+            .CountAsync(eachUser => eachUser.Username == dto.Username);
+
+        Assert.False(res);
+        Assert.Equal(1, userCount);
     }
 }

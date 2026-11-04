@@ -90,4 +90,18 @@ public class AuthServiceTests : IDisposable
 
         Assert.False(string.IsNullOrEmpty(resultToken));
     }
+
+    
+    [Fact]
+    public async Task LoginUserAsync_WrongUsername_ReturnsNull()
+    {
+        RegisterRequestDto registerRequestDto = new RegisterRequestDto { Username = "TestName", Password = "TestPassword"};
+        await _service.RegisterUserAsync(registerRequestDto);
+
+        LoginRequestDto loginRequestDto = new LoginRequestDto { Username = "TestName1", Password = "TestPassword"};
+        string? resultToken = await _service.LoginUserAsync(loginRequestDto);
+
+        Assert.Null(resultToken);
+    }
+
 }

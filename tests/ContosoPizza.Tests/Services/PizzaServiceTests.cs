@@ -32,4 +32,37 @@ public class PizzaServiceTests : IDisposable
         _context.Dispose();
         _connection.Dispose();
     }
+
+        [Fact]
+    public async Task AddAsync_ValidPizza_ReturnsPizzaWithId()
+    {
+        PizzaRequestDto requestDto = CreateCapricciosa();
+
+        PizzaResponseDto responseDto = await _service.AddAsync(requestDto);
+
+        Assert.True(responseDto.Id > 0);
+        Assert.Equal("Capricciosa", responseDto.Name);
+        Assert.True(responseDto.IsGlutenFree);
+        Assert.Equal(requestDto.Ingredients, responseDto.Ingredients);
+    }
+
+    private static PizzaRequestDto CreateCapricciosa()
+    {
+        return new PizzaRequestDto
+        {
+            Name = "Capricciosa",
+            IsGlutenFree = true,
+            Ingredients = ["olive oil", "tomato", "cheese", "mushrooms"]
+        };
+    }
+
+    private static PizzaRequestDto CreateMargherita()
+    {
+        return new PizzaRequestDto
+        {
+            Name = "Margherita",
+            IsGlutenFree = false,
+            Ingredients = ["olive oil", "tomato", "cheese"]
+        };
+    }
 }

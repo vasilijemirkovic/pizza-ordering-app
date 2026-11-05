@@ -122,6 +122,22 @@ public class PizzaServiceTests : IDisposable
         Assert.False(updatedPizza);
     }
 
+    
+    [Fact]
+    public async Task DeleteAsync_ExistingId_RemovesPizza()
+    {
+        PizzaRequestDto capricciosaDto = CreateCapricciosa();
+
+        PizzaResponseDto returnDto = await _service.AddAsync(capricciosaDto);
+
+        bool deletedPizza = await _service.DeleteAsync(returnDto.Id);
+
+        List<PizzaResponseDto> leftPizzas = await _service.GetAllAsync();
+
+        Assert.True(deletedPizza);
+        Assert.Empty(leftPizzas);
+    }
+
     private static PizzaRequestDto CreateCapricciosa()
     {
         return new PizzaRequestDto

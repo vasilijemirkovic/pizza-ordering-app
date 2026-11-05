@@ -61,6 +61,20 @@ public class PizzaServiceTests : IDisposable
         Assert.Equal(2, pizzaResponseDtos.Count);
     }
 
+        
+    [Fact]
+    public async Task GetAsync_ExistingId_ReturnsPizza()
+    {
+        PizzaRequestDto capricciosaDto = CreateCapricciosa();
+
+        PizzaResponseDto returnDto = await _service.AddAsync(capricciosaDto);
+
+        PizzaResponseDto? pizzaResponseDto = await _service.GetAsync(returnDto.Id);
+
+        Assert.NotNull(pizzaResponseDto);
+        Assert.Equal(returnDto.Id, pizzaResponseDto.Id);
+    }
+
     private static PizzaRequestDto CreateCapricciosa()
     {
         return new PizzaRequestDto

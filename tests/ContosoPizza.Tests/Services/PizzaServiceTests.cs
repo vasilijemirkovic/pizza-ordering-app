@@ -87,6 +87,27 @@ public class PizzaServiceTests : IDisposable
         Assert.Null(pizzaResponseDto);
     }
 
+    
+    [Fact]
+    public async Task UpdateAsync_ExistingId_UpdatesPizza()
+    {
+        PizzaRequestDto capricciosaDto = CreateCapricciosa();
+
+        PizzaResponseDto returnDto = await _service.AddAsync(capricciosaDto);
+
+        PizzaRequestDto margheritaDto = CreateMargherita();
+
+        bool updatedPizza = await _service.UpdateAsync(returnDto.Id, margheritaDto);
+
+        PizzaResponseDto? pizzaResponseDto = await _service.GetAsync(returnDto.Id);
+
+        Assert.True(updatedPizza);
+        Assert.NotNull(pizzaResponseDto);
+        Assert.Equal(margheritaDto.Name, pizzaResponseDto.Name);
+        Assert.Equal(margheritaDto.IsGlutenFree, pizzaResponseDto.IsGlutenFree);
+        Assert.Equal(margheritaDto.Ingredients, pizzaResponseDto.Ingredients);
+    }
+
     private static PizzaRequestDto CreateCapricciosa()
     {
         return new PizzaRequestDto

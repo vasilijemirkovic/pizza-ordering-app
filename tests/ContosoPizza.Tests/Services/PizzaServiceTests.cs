@@ -61,7 +61,6 @@ public class PizzaServiceTests : IDisposable
         Assert.Equal(2, pizzaResponseDtos.Count);
     }
 
-
     [Fact]
     public async Task GetAsync_ExistingId_ReturnsPizza()
     {
@@ -75,7 +74,7 @@ public class PizzaServiceTests : IDisposable
         Assert.Equal(returnDto.Id, pizzaResponseDto.Id);
     }
 
-            [Fact]
+    [Fact]
     public async Task GetAsync_NonExistingId_ReturnsNull()
     {
         PizzaRequestDto capricciosaDto = CreateCapricciosa();
@@ -87,7 +86,6 @@ public class PizzaServiceTests : IDisposable
         Assert.Null(pizzaResponseDto);
     }
 
-    
     [Fact]
     public async Task UpdateAsync_ExistingId_UpdatesPizza()
     {
@@ -108,7 +106,7 @@ public class PizzaServiceTests : IDisposable
         Assert.Equal(margheritaDto.Ingredients, pizzaResponseDto.Ingredients);
     }
 
-        [Fact]
+    [Fact]
     public async Task UpdateAsync_NonExistingId_ReturnsFalse()
     {
         PizzaRequestDto capricciosaDto = CreateCapricciosa();
@@ -122,7 +120,6 @@ public class PizzaServiceTests : IDisposable
         Assert.False(updatedPizza);
     }
 
-    
     [Fact]
     public async Task DeleteAsync_ExistingId_RemovesPizza()
     {
@@ -136,6 +133,21 @@ public class PizzaServiceTests : IDisposable
 
         Assert.True(deletedPizza);
         Assert.Empty(leftPizzas);
+    }
+
+    [Fact]
+    public async Task DeleteAsync_NonExistingId_ReturnsFalse()
+    {
+        PizzaRequestDto capricciosaDto = CreateCapricciosa();
+
+        PizzaResponseDto returnDto = await _service.AddAsync(capricciosaDto);
+
+        bool deletedPizza = await _service.DeleteAsync(returnDto.Id + 1);
+
+        List<PizzaResponseDto> leftPizzas = await _service.GetAllAsync();
+
+        Assert.False(deletedPizza);
+        Assert.Single(leftPizzas);
     }
 
     private static PizzaRequestDto CreateCapricciosa()

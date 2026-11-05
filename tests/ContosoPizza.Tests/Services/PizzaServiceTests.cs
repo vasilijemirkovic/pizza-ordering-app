@@ -33,7 +33,7 @@ public class PizzaServiceTests : IDisposable
         _connection.Dispose();
     }
 
-        [Fact]
+    [Fact]
     public async Task AddAsync_ValidPizza_ReturnsPizzaWithId()
     {
         PizzaRequestDto requestDto = CreateCapricciosa();
@@ -44,6 +44,21 @@ public class PizzaServiceTests : IDisposable
         Assert.Equal("Capricciosa", responseDto.Name);
         Assert.True(responseDto.IsGlutenFree);
         Assert.Equal(requestDto.Ingredients, responseDto.Ingredients);
+    }
+
+    [Fact]
+    public async Task GetAllAsync_TwoPizzasAdded_ReturnsBoth()
+    {
+        PizzaRequestDto capricciosaDto = CreateCapricciosa();
+
+        PizzaRequestDto margheritaDto = CreateMargherita();
+
+        await _service.AddAsync(capricciosaDto);
+        await _service.AddAsync(margheritaDto);
+
+        List<PizzaResponseDto> pizzaResponseDtos = await _service.GetAllAsync();
+
+        Assert.Equal(2, pizzaResponseDtos.Count);
     }
 
     private static PizzaRequestDto CreateCapricciosa()

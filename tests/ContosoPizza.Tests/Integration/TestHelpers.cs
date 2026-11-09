@@ -17,4 +17,9 @@ public static class TestHelpers
         var result = await response.Content.ReadFromJsonAsync<LoginResponse>();
         return result!.Token;
     }
+    
+    internal static string CreateUniqueUsername()
+    {
+        return Guid.NewGuid().ToString("N")[..10] + "user";
+    }
 }

@@ -57,4 +57,23 @@ public class AuthEndpointsTests : IClassFixture<CustomWebApplicationFactory>
 
         Assert.Equal(HttpStatusCode.Conflict, anotherRegisterResponse.StatusCode);
     }
+
+    [Fact]
+    public async Task Login_ValidCredentials_ReturnsOk()
+    {
+        var client = _factory.CreateClient();
+
+        string username = TestHelpers.CreateUniqueUsername();
+
+        RegisterRequestDto registerRequestDto = new() { Username = username, Password = "Password123" };
+
+        var registerResponse = await client.PostAsJsonAsync("/Auth/register", registerRequestDto);
+        registerResponse.EnsureSuccessStatusCode();
+
+        LoginRequestDto loginRequestDto = new() { Username = username, Password = "Password123" };
+
+        var loginResponse = await client.PostAsJsonAsync("/Auth/login", loginRequestDto);
+
+        Assert.Equal(HttpStatusCode.OK, loginResponse.StatusCode);
+    }
 }

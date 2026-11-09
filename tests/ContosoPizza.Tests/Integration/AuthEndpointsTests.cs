@@ -12,4 +12,18 @@ public class AuthEndpointsTests : IClassFixture<CustomWebApplicationFactory>
     {
         _factory = factory;
     }
+
+    [Fact]
+    public async Task Register_ValidData_ReturnsCreated()
+    {
+        var client = _factory.CreateClient();
+
+        string username = TestHelpers.CreateUniqueUsername();
+
+        RegisterRequestDto registerRequestDto = new() { Username = username, Password = "Password123" };
+
+        var registerResponse = await client.PostAsJsonAsync("/Auth/register", registerRequestDto);
+
+        Assert.Equal(HttpStatusCode.Created, registerResponse.StatusCode);
+    }
 }

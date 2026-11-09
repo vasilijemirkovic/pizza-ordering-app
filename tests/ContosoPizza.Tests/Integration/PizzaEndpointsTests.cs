@@ -75,14 +75,14 @@ public class PizzaEndpointsTests : IClassFixture<CustomWebApplicationFactory>
 
         var client = _factory.CreateClient();
 
-        string Username = TestHelpers.CreateUniqueUsername();
+        string username = TestHelpers.CreateUniqueUsername();
 
-        RegisterRequestDto registerRequestDto = new() { Username = Username, Password = "Password123" };
+        RegisterRequestDto registerRequestDto = new() { Username = username, Password = "Password123" };
 
         var registerResponse = await client.PostAsJsonAsync("/Auth/register", registerRequestDto);
         registerResponse.EnsureSuccessStatusCode();
 
-        var token = await TestHelpers.LoginAsync(client, Username, "Password123");
+        var token = await TestHelpers.LoginAsync(client, username, "Password123");
         client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
         var response = await client.PostAsJsonAsync("/Pizza", capricciosaDto);
@@ -109,13 +109,13 @@ public class PizzaEndpointsTests : IClassFixture<CustomWebApplicationFactory>
 
         var taken = await response.Content.ReadFromJsonAsync<PizzaResponseDto>();
 
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         Assert.NotNull(taken);
         Assert.Equal("Capricciosa", taken.Name);
-        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
     }
 
     [Fact]
-    public async Task GetPizza_WithNonExistingId_ReturnsNotFound()
+    public async Task DeletePizza_WithNonExistingId_ReturnsNotFound()
     {
         var client = _factory.CreateClient();
 
@@ -149,8 +149,8 @@ public class PizzaEndpointsTests : IClassFixture<CustomWebApplicationFactory>
         var getResponse = await client.GetAsync($"/Pizza/{created.Id}");
         var updated = await getResponse.Content.ReadFromJsonAsync<PizzaResponseDto>();
 
-        Assert.NotNull(updated);
         Assert.Equal(HttpStatusCode.NoContent, response.StatusCode);
+        Assert.NotNull(updated);
         Assert.Equal("Margherita", updated.Name);
     }
 

@@ -127,6 +127,33 @@ public class PizzaEndpointsTests : IClassFixture<CustomWebApplicationFactory>
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
     }
 
+    [Fact]
+    public async Task UpdatePizza_AsAdmin_ReturnsNoContent()
+    {
+        PizzaRequestDto capricciosaDto = CreateCapricciosaDto();
+
+        var client = _factory.CreateClient();
+
+        var token = await TestHelpers.LoginAsync(client, "testadmin", "TestAdmin123");
+        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+        var createResponse = await client.PostAsJsonAsync("/Pizza", capricciosaDto);
+        createResponse.EnsureSuccessStatusCode();
+
+        var created = await createResponse.Content.ReadFromJsonAsync<PizzaResponseDto>();
+
+        PizzaRequestDto margheritaDto = CreateMargheritaDto();
+
+        var response = await client.PutAsJsonAsync($"/Pizza/{created!.Id}", margheritaDto);
+
+        var getResponse = await client.GetAsync($"/Pizza/{created.Id}");
+        var updated = await getResponse.Content.ReadFromJsonAsync<PizzaResponseDto>();
+
+        Assert.NotNull(updated);
+        Assert.Equal(HttpStatusCode.NoContent, response.StatusCode);
+        Assert.Equal("Margherita", updated.Name);
+    }
+
     private static PizzaRequestDto CreateCapricciosaDto()
     {
         PizzaRequestDto capricciosaDto = new PizzaRequestDto

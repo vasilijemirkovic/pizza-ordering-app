@@ -76,4 +76,24 @@ public class AuthEndpointsTests : IClassFixture<CustomWebApplicationFactory>
 
         Assert.Equal(HttpStatusCode.OK, loginResponse.StatusCode);
     }
+
+    [Fact]
+    public async Task Login_WrongPassword_ReturnsUnauthorized()
+    {
+        var client = _factory.CreateClient();
+
+        string username = TestHelpers.CreateUniqueUsername();
+        string password = "Password123";
+
+        RegisterRequestDto registerRequestDto = new() { Username = username, Password = password };
+
+        var registerResponse = await client.PostAsJsonAsync("/Auth/register", registerRequestDto);
+        registerResponse.EnsureSuccessStatusCode();
+
+        LoginRequestDto loginRequestDto = new() { Username = username, Password = "Password" };
+
+        var loginResponse = await client.PostAsJsonAsync("/Auth/login", loginRequestDto);
+
+        Assert.Equal(HttpStatusCode.Unauthorized, loginResponse.StatusCode);
+    }
 }

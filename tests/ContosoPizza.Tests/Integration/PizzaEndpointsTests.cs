@@ -41,6 +41,16 @@ public class PizzaEndpointsTests : IClassFixture<CustomWebApplicationFactory>
 
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
     }
+    
+    [Fact]
+    public async Task GetAllPizzas_WithoutToken_ReturnsOk()
+    {
+        var client = _factory.CreateClient();
+
+        var response = await client.GetAsync("/Pizza");
+
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+    }
 
     private static PizzaRequestDto CreateCapricciosaDto()
     {

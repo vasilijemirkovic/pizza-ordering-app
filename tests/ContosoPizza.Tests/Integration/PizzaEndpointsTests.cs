@@ -23,7 +23,7 @@ public class PizzaEndpointsTests : IClassFixture<CustomWebApplicationFactory>
 
         Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
     }
-    
+
     [Fact]
     public async Task CreatePizza_TooManyIngredients_ReturnsBadRequest()
     {
@@ -41,7 +41,7 @@ public class PizzaEndpointsTests : IClassFixture<CustomWebApplicationFactory>
 
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
     }
-    
+
     [Fact]
     public async Task GetAllPizzas_WithoutToken_ReturnsOk()
     {
@@ -52,17 +52,40 @@ public class PizzaEndpointsTests : IClassFixture<CustomWebApplicationFactory>
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
     }
 
+    [Fact]
+    public async Task CreatePizza_AsAdmin_ReturnsCreated()
+    {
+        PizzaRequestDto capricciosaDto = CreateCapricciosaDto();
+
+        var client = _factory.CreateClient();
+
+        var token = await TestHelpers.LoginAsync(client, "testadmin", "TestAdmin123");
+        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+        var response = await client.PostAsJsonAsync("/Pizza", capricciosaDto);
+
+        Assert.Equal(HttpStatusCode.Created, response.StatusCode);
+    }
+
     private static PizzaRequestDto CreateCapricciosaDto()
     {
-        PizzaRequestDto capricciosaDto = new PizzaRequestDto { Name = "Capricciosa", IsGlutenFree = true,
-            Ingredients = {"olive oil", "tomato", "cheese", "mushrooms" } };
+        PizzaRequestDto capricciosaDto = new PizzaRequestDto
+        {
+            Name = "Capricciosa",
+            IsGlutenFree = true,
+            Ingredients = { "olive oil", "tomato", "cheese", "mushrooms" }
+        };
         return capricciosaDto;
     }
 
     private static PizzaRequestDto CreateMargheritaDto()
     {
-        PizzaRequestDto margheritaDto = new PizzaRequestDto { Name = "Margherita", IsGlutenFree = false,
-            Ingredients = {"olive oil", "tomato", "cheese" } };
+        PizzaRequestDto margheritaDto = new PizzaRequestDto
+        {
+            Name = "Margherita",
+            IsGlutenFree = false,
+            Ingredients = { "olive oil", "tomato", "cheese" }
+        };
         return margheritaDto;
     }
 }

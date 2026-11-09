@@ -115,6 +115,16 @@ public class PizzaEndpointsTests : IClassFixture<CustomWebApplicationFactory>
     }
 
     [Fact]
+    public async Task GetPizza_WithNonExistingId_ReturnsNotFound()
+    {
+        var client = _factory.CreateClient();
+
+        var response = await client.GetAsync("/Pizza/999");
+
+        Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+    }
+
+    [Fact]
     public async Task DeletePizza_WithNonExistingId_ReturnsNotFound()
     {
         var client = _factory.CreateClient();

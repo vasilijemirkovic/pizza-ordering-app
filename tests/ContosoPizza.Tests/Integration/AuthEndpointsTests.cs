@@ -26,4 +26,19 @@ public class AuthEndpointsTests : IClassFixture<CustomWebApplicationFactory>
 
         Assert.Equal(HttpStatusCode.Created, registerResponse.StatusCode);
     }
+
+
+    [Fact]
+    public async Task Register_ShortPassword_ReturnsBadRequest()
+    {
+        var client = _factory.CreateClient();
+
+        string username = TestHelpers.CreateUniqueUsername();
+
+        RegisterRequestDto registerRequestDto = new() { Username = username, Password = "test123" };
+
+        var registerResponse = await client.PostAsJsonAsync("/Auth/register", registerRequestDto);
+
+        Assert.Equal(HttpStatusCode.BadRequest, registerResponse.StatusCode);
+    }
 }

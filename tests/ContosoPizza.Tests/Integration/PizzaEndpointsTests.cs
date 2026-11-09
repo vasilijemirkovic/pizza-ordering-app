@@ -67,7 +67,7 @@ public class PizzaEndpointsTests : IClassFixture<CustomWebApplicationFactory>
         Assert.Equal(HttpStatusCode.Created, response.StatusCode);
     }
 
-    
+
     [Fact]
     public async Task CreatePizza_AsRegularUser_ReturnsForbidden()
     {
@@ -88,6 +88,30 @@ public class PizzaEndpointsTests : IClassFixture<CustomWebApplicationFactory>
         var response = await client.PostAsJsonAsync("/Pizza", capricciosaDto);
 
         Assert.Equal(HttpStatusCode.Forbidden, response.StatusCode);
+    }
+
+    [Fact]
+    public async Task GetPizza_WithExistingId_ReturnsOk()
+    {
+        PizzaRequestDto capricciosaDto = CreateCapricciosaDto();
+
+        var client = _factory.CreateClient();
+
+        var token = await TestHelpers.LoginAsync(client, "testadmin", "TestAdmin123");
+        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+        var createResponse = await client.PostAsJsonAsync("/Pizza", capricciosaDto);
+        createResponse.EnsureSuccessStatusCode();
+
+        var created = await createResponse.Content.ReadFromJsonAsync<PizzaResponseDto>();
+
+        var response = await client.GetAsync($"/Pizza/{created!.Id}");
+
+        var taken = await response.Content.ReadFromJsonAsync<PizzaResponseDto>();
+
+        Assert.NotNull(taken);
+        Assert.Equal("Capricciosa", taken.Name);
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
     }
 
     private static PizzaRequestDto CreateCapricciosaDto()

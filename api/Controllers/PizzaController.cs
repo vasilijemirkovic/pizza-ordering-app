@@ -10,7 +10,6 @@ namespace ContosoPizza.Controllers;
 [Route("[controller]")]
 public class PizzaController : ControllerBase
 {
-
     private readonly IPizzaService _service;
 
     public PizzaController(IPizzaService service)
@@ -38,14 +37,12 @@ public class PizzaController : ControllerBase
         return pizza;
     }
 
-
     [HttpPost]
     public async Task<ActionResult<PizzaResponseDto>> Create(PizzaRequestDto dto)
     {
         var created = await _service.AddAsync(dto);
         return CreatedAtAction(nameof(Get), new { id = created.Id }, created);
     }
-
 
     [HttpPut("{id}")]
     public async Task<IActionResult> Update(int id, PizzaRequestDto dto)

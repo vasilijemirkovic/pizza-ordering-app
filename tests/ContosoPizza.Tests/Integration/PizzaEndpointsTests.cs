@@ -67,6 +67,29 @@ public class PizzaEndpointsTests : IClassFixture<CustomWebApplicationFactory>
         Assert.Equal(HttpStatusCode.Created, response.StatusCode);
     }
 
+    
+    [Fact]
+    public async Task CreatePizza_AsRegularUser_ReturnsForbidden()
+    {
+        PizzaRequestDto capricciosaDto = CreateCapricciosaDto();
+
+        var client = _factory.CreateClient();
+
+        string Username = TestHelpers.CreateUniqueUsername();
+
+        RegisterRequestDto registerRequestDto = new() { Username = Username, Password = "Password123" };
+
+        var registerResponse = await client.PostAsJsonAsync("/Auth/register", registerRequestDto);
+        registerResponse.EnsureSuccessStatusCode();
+
+        var token = await TestHelpers.LoginAsync(client, Username, "Password123");
+        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+        var response = await client.PostAsJsonAsync("/Pizza", capricciosaDto);
+
+        Assert.Equal(HttpStatusCode.Forbidden, response.StatusCode);
+    }
+
     private static PizzaRequestDto CreateCapricciosaDto()
     {
         PizzaRequestDto capricciosaDto = new PizzaRequestDto

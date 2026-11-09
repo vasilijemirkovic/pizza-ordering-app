@@ -114,6 +114,19 @@ public class PizzaEndpointsTests : IClassFixture<CustomWebApplicationFactory>
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
     }
 
+    [Fact]
+    public async Task GetPizza_WithNonExistingId_ReturnsNotFound()
+    {
+        var client = _factory.CreateClient();
+
+        var token = await TestHelpers.LoginAsync(client, "testadmin", "TestAdmin123");
+        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+        var response = await client.DeleteAsync("/Pizza/999");
+
+        Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+    }
+
     private static PizzaRequestDto CreateCapricciosaDto()
     {
         PizzaRequestDto capricciosaDto = new PizzaRequestDto

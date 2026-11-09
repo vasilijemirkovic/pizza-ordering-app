@@ -13,4 +13,10 @@ public class PizzaEndpointsTests : IClassFixture<CustomWebApplicationFactory>
     {
         _factory = factory;
     }
+    private static PizzaRequestDto CreateMargheritaDto()
+    {
+        PizzaRequestDto margheritaDto = new PizzaRequestDto { Name = "Margherita", IsGlutenFree = false,
+            Ingredients = {"olive oil", "tomato", "cheese" } };
+        return margheritaDto;
+    }
 }

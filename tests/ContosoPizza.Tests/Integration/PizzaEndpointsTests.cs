@@ -13,7 +13,17 @@ public class PizzaEndpointsTests : IClassFixture<CustomWebApplicationFactory>
     {
         _factory = factory;
     }
-    
+
+    [Fact]
+    public async Task CreatePizza_WithoutToken_ReturnsUnauthorized()
+    {
+        var client = _factory.CreateClient();
+
+        var response = await client.PostAsJsonAsync("/Pizza", CreateCapricciosaDto());
+
+        Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
+    }
+
     private static PizzaRequestDto CreateCapricciosaDto()
     {
         PizzaRequestDto capricciosaDto = new PizzaRequestDto { Name = "Capricciosa", IsGlutenFree = true,

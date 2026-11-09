@@ -23,6 +23,24 @@ public class PizzaEndpointsTests : IClassFixture<CustomWebApplicationFactory>
 
         Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
     }
+    
+    [Fact]
+    public async Task CreatePizza_TooManyIngredients_ReturnsBadRequest()
+    {
+        PizzaRequestDto capricciosaDto = CreateCapricciosaDto();
+
+        capricciosaDto.Ingredients.Add("bacon");
+        capricciosaDto.Ingredients.Add("egg");
+
+        var client = _factory.CreateClient();
+
+        var token = await TestHelpers.LoginAsync(client, "testadmin", "TestAdmin123");
+        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+        var response = await client.PostAsJsonAsync("/Pizza", capricciosaDto);
+
+        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+    }
 
     private static PizzaRequestDto CreateCapricciosaDto()
     {

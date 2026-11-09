@@ -21,6 +21,7 @@ A frontend client is currently in progress.
 - JWT Bearer authentication
 - ASP.NET Core Identity `PasswordHasher` (PBKDF2)
 - Swagger / Swashbuckle
+- xUnit
 
 ## Getting Started
 
@@ -54,6 +55,16 @@ A frontend client is currently in progress.
    The SQLite database is created and all migrations are applied automatically on startup.
 
 4. Open Swagger UI at `http://localhost:5153/swagger`.
+
+
+## Testing
+
+The solution includes unit tests (services, mapping, exception handler) and
+integration tests (API endpoints, authentication and authorization) using xUnit
+and `WebApplicationFactory` with an in-memory SQLite database.
+
+Run all tests from the repository root:
+    dotnet test
 
 
 ## API Endpoints
@@ -107,7 +118,7 @@ api/
 **Project structure is going to be changed after the implementation of the unit tests.**
 
 ## Roadmap
-- [ ] Unit tests with xUnit
+- [x] Unit tests with xUnit
 - [ ] Frontend client
 - [ ] Deployment
 

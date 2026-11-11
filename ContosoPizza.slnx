@@ -2,6 +2,9 @@
   <Folder Name="/api/">
     <Project Path="api/ContosoPizza.csproj" />
   </Folder>
+  <Folder Name="/frontend-blazor/">
+    <Project Path="frontend-blazor/ContosoPizza.Client.csproj" />
+  </Folder>
   <Folder Name="/tests/">
     <Project Path="tests/ContosoPizza.Tests/ContosoPizza.Tests.csproj" />
   </Folder>

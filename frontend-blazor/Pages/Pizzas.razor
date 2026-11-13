@@ -1,5 +1,6 @@
 @page "/pizzas"
-@using ContosoPizza.Client.Models
+@using ContosoPizza.Shared.Dtos
+
 @inject HttpClient Http
 
 
@@ -35,10 +36,10 @@ else
 }
 
 @code {
-    private List<Pizza>? pizzas;
+    private List<PizzaResponseDto>? pizzas;
 
     protected override async Task OnInitializedAsync()
     {
-        pizzas = await Http.GetFromJsonAsync<List<Pizza>>("Pizza");
+        pizzas = await Http.GetFromJsonAsync<List<PizzaResponseDto>>("Pizza");
     }
 }

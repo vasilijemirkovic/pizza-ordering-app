@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace ContosoPizza.Dtos;
+namespace ContosoPizza.Shared.Dtos;
 
 /// <summary>
 /// Represents the DTO sent by the client when creating or editing a pizza.
@@ -16,5 +16,5 @@ public class PizzaRequestDto
 
     [MinLength(1, ErrorMessage = "Pizza must contain al least 1 ingredient!")]
     [MaxLength(5, ErrorMessage = "Pizza can contain at most 5 ingredients!")]
-    public List<string> Ingredients { get; set; } = new();    
+    public List<string> Ingredients { get; set; } = new();
 }

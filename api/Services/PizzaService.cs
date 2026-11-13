@@ -1,5 +1,5 @@
 using ContosoPizza.Data;
-using ContosoPizza.Dtos;
+using ContosoPizza.Shared.Dtos;
 using Microsoft.EntityFrameworkCore;
 
 namespace ContosoPizza.Services;
@@ -17,7 +17,7 @@ public class PizzaService : IPizzaService
         .AsNoTracking()
         .Select(p => p.ToResponse())
         .ToListAsync();
-    
+
     public async Task<PizzaResponseDto?> GetAsync(int id)
     {
         var pizza = await _context.Pizzas
@@ -51,13 +51,13 @@ public class PizzaService : IPizzaService
     public async Task<bool> UpdateAsync(int id, PizzaRequestDto dto)
     {
         var pizza = await _context.Pizzas.FindAsync(id);
-        if(pizza is null)
+        if (pizza is null)
             return false;
-        
+
         pizza.Name = dto.Name;
         pizza.IsGlutenFree = dto.IsGlutenFree;
         pizza.Ingredients = dto.Ingredients;
-        
+
         await _context.SaveChangesAsync();
         return true;
     }

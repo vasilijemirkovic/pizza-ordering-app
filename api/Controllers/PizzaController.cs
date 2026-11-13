@@ -1,6 +1,6 @@
 using ContosoPizza.Services;
 using Microsoft.AspNetCore.Mvc;
-using ContosoPizza.Dtos;
+using ContosoPizza.Shared.Dtos;
 using Microsoft.AspNetCore.Authorization;
 
 namespace ContosoPizza.Controllers;

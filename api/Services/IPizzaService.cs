@@ -1,4 +1,4 @@
-using ContosoPizza.Dtos;
+using ContosoPizza.Shared.Dtos;
 
 namespace ContosoPizza.Services;
 

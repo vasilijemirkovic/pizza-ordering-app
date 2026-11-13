@@ -1,5 +1,5 @@
 using ContosoPizza.Data;
-using ContosoPizza.Dtos;
+using ContosoPizza.Shared.Dtos;
 using ContosoPizza.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
@@ -29,12 +29,12 @@ public class AuthService : IAuthService
     {
         bool foundUser = await _context.Users.AnyAsync(eachUser => eachUser.Username == dto.Username);
 
-        if(foundUser) return false;
+        if (foundUser) return false;
 
-        User registerUser = new User{Username=dto.Username, Role = "User"};
+        User registerUser = new User { Username = dto.Username, Role = "User" };
 
         registerUser.PasswordHash = _passwordHasher.HashPassword(registerUser, dto.Password);
-        
+
 
         _context.Users.Add(registerUser);
         await _context.SaveChangesAsync();
@@ -52,38 +52,38 @@ public class AuthService : IAuthService
 
         var exactPassword = _passwordHasher.VerifyHashedPassword(user, user.PasswordHash, dto.Password);
 
-        if(exactPassword == PasswordVerificationResult.Failed) return null;
+        if (exactPassword == PasswordVerificationResult.Failed) return null;
 
         return GenerateToken(user);
     }
 
     private string GenerateToken(User user)
-    {        
+    {
         Claim id = new Claim(ClaimTypes.NameIdentifier, user.Id.ToString());
         Claim name = new Claim(ClaimTypes.Name, user.Username);
         Claim role = new Claim(ClaimTypes.Role, user.Role);
 
-        List<Claim> claims = new List<Claim> { id, name, role};
+        List<Claim> claims = new List<Claim> { id, name, role };
 
         var secret = _configuration["Jwt:Key"];
-        
+
         if (secret is null) throw new InvalidOperationException("JWT key is not configured.");
 
 
-        SymmetricSecurityKey key = 
+        SymmetricSecurityKey key =
         new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secret));
 
         SigningCredentials credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
         JwtSecurityToken token =
         new JwtSecurityToken(
-            issuer : _configuration["Jwt:Issuer"],
-            audience : _configuration["Jwt:Audience"],
-            claims : claims,
-            notBefore : DateTime.UtcNow,
-            expires : DateTime.UtcNow.AddMinutes(_configuration.GetValue<int>("Jwt:ExpiresInMinutes")),
-            signingCredentials : credentials);
-        
+            issuer: _configuration["Jwt:Issuer"],
+            audience: _configuration["Jwt:Audience"],
+            claims: claims,
+            notBefore: DateTime.UtcNow,
+            expires: DateTime.UtcNow.AddMinutes(_configuration.GetValue<int>("Jwt:ExpiresInMinutes")),
+            signingCredentials: credentials);
+
         string tokenToReturn = new JwtSecurityTokenHandler().WriteToken(token);
 
         return tokenToReturn;

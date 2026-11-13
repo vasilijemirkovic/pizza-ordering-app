@@ -1,4 +1,4 @@
-namespace ContosoPizza.Dtos;
+namespace ContosoPizza.Shared.Dtos;
 
 /// <summary>
 /// Represents the DTO retured to the client.

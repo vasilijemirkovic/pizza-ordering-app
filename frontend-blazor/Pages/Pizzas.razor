@@ -25,7 +25,6 @@ else
             @foreach (var pizza in pizzas)
             {
                 <tr>
-                    <td>@pizza.Id</td>
                     <td>@pizza.Name</td>
                     <td>@(pizza.IsGlutenFree ? "Yes" : "No")</td>
                     <td>@(string.Join(", ", pizza.Ingredients))</td>

@@ -1,0 +1,45 @@
+@page "/pizzas"
+@using ContosoPizza.Client.Models
+@inject HttpClient Http
+
+
+<PageTitle>Pizzas</PageTitle>
+
+<h3>Pizzas</h3>
+
+@if (pizzas is null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Gluten-free</th>
+                <th>Ingredients</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var pizza in pizzas)
+            {
+                <tr>
+                    <td>@pizza.Id</td>
+                    <td>@pizza.Name</td>
+                    <td>@(pizza.IsGlutenFree ? "Yes" : "No")</td>
+                    <td>string.Join(", ", pizza.Ingredients)</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private List<Pizza>? pizzas;
+
+    protected override async Task OnInitializedAsync()
+    {
+        pizzas = await Http.GetFromJsonAsync<List<Pizza>>("Pizza");
+    }
+}

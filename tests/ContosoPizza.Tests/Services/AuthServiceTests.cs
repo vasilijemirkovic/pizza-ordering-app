@@ -2,7 +2,7 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using ContosoPizza.Data;
-using ContosoPizza.Dtos;
+using ContosoPizza.Shared.Dtos;
 using ContosoPizza.Models;
 using ContosoPizza.Services;
 using Microsoft.AspNetCore.Identity;
@@ -27,7 +27,7 @@ public class AuthServiceTests : IDisposable
         var options = new DbContextOptionsBuilder<PizzaContext>()
             .UseSqlite(_connection)
             .Options;
-        
+
         _context = new PizzaContext(options);
         _context.Database.EnsureCreated();
 
@@ -52,7 +52,7 @@ public class AuthServiceTests : IDisposable
     [Fact]
     public async Task RegisterUserAsync_NewUsername_ReturnsTrueAndSavesUser()
     {
-        RegisterRequestDto dto = new RegisterRequestDto { Username = "TestName", Password = "TestPassword"};
+        RegisterRequestDto dto = new RegisterRequestDto { Username = "TestName", Password = "TestPassword" };
 
         bool registerResult = await _service.RegisterUserAsync(dto);
 
@@ -69,7 +69,7 @@ public class AuthServiceTests : IDisposable
     [Fact]
     public async Task RegisterUserAsync_ExistingUsername_ReturnsFalse()
     {
-        RegisterRequestDto dto = new RegisterRequestDto { Username = "TestName", Password = "TestPassword"};
+        RegisterRequestDto dto = new RegisterRequestDto { Username = "TestName", Password = "TestPassword" };
 
         await _service.RegisterUserAsync(dto);
 
@@ -85,10 +85,10 @@ public class AuthServiceTests : IDisposable
     [Fact]
     public async Task LoginUserAsync_ValidCredentials_ReturnsToken()
     {
-        RegisterRequestDto registerRequestDto = new RegisterRequestDto { Username = "TestName", Password = "TestPassword"};
+        RegisterRequestDto registerRequestDto = new RegisterRequestDto { Username = "TestName", Password = "TestPassword" };
         await _service.RegisterUserAsync(registerRequestDto);
 
-        LoginRequestDto loginRequestDto = new LoginRequestDto { Username = "TestName", Password = "TestPassword"};
+        LoginRequestDto loginRequestDto = new LoginRequestDto { Username = "TestName", Password = "TestPassword" };
         string? resultToken = await _service.LoginUserAsync(loginRequestDto);
 
         var token = new JwtSecurityTokenHandler().ReadJwtToken(resultToken);
@@ -101,10 +101,10 @@ public class AuthServiceTests : IDisposable
     [Fact]
     public async Task LoginUserAsync_WrongUsername_ReturnsNull()
     {
-        RegisterRequestDto registerRequestDto = new RegisterRequestDto { Username = "TestName", Password = "TestPassword"};
+        RegisterRequestDto registerRequestDto = new RegisterRequestDto { Username = "TestName", Password = "TestPassword" };
         await _service.RegisterUserAsync(registerRequestDto);
 
-        LoginRequestDto loginRequestDto = new LoginRequestDto { Username = "TestName1", Password = "TestPassword"};
+        LoginRequestDto loginRequestDto = new LoginRequestDto { Username = "TestName1", Password = "TestPassword" };
         string? resultToken = await _service.LoginUserAsync(loginRequestDto);
 
         Assert.Null(resultToken);
@@ -113,10 +113,10 @@ public class AuthServiceTests : IDisposable
     [Fact]
     public async Task LoginUserAsync_WrongPassword_ReturnsNull()
     {
-        RegisterRequestDto registerRequestDto = new RegisterRequestDto { Username = "TestName", Password = "TestPassword"};
+        RegisterRequestDto registerRequestDto = new RegisterRequestDto { Username = "TestName", Password = "TestPassword" };
         await _service.RegisterUserAsync(registerRequestDto);
 
-        LoginRequestDto loginRequestDto = new LoginRequestDto { Username = "TestName", Password = "TestPassword1"};
+        LoginRequestDto loginRequestDto = new LoginRequestDto { Username = "TestName", Password = "TestPassword1" };
         string? resultToken = await _service.LoginUserAsync(loginRequestDto);
 
         Assert.Null(resultToken);
@@ -125,7 +125,7 @@ public class AuthServiceTests : IDisposable
     [Fact]
     public async Task LoginUserAsync_UserNotExists_ReturnsNull()
     {
-        LoginRequestDto loginRequestDto = new LoginRequestDto { Username = "TestName", Password = "TestPassword"};
+        LoginRequestDto loginRequestDto = new LoginRequestDto { Username = "TestName", Password = "TestPassword" };
         string? resultToken = await _service.LoginUserAsync(loginRequestDto);
 
         Assert.Null(resultToken);

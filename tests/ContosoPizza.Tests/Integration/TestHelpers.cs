@@ -1,5 +1,5 @@
 using System.Net.Http.Json;
-using ContosoPizza.Dtos;
+using ContosoPizza.Shared.Dtos;
 
 namespace ContosoPizza.Tests.Integration;
 
@@ -17,7 +17,7 @@ public static class TestHelpers
         var result = await response.Content.ReadFromJsonAsync<LoginResponse>();
         return result!.Token;
     }
-    
+
     internal static string CreateUniqueUsername()
     {
         return Guid.NewGuid().ToString("N")[..10] + "user";

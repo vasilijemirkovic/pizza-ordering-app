@@ -1,5 +1,5 @@
 using ContosoPizza.Data;
-using ContosoPizza.Dtos;
+using ContosoPizza.Shared.Dtos;
 using ContosoPizza.Services;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;

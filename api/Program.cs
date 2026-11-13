@@ -48,6 +48,15 @@ builder.Services.AddDbContext<PizzaContext>(options => options.UseSqlite(builder
 builder.Services.AddScoped<IPizzaService, PizzaService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 
+var clientUrl = builder.Configuration["ClientUrl"] ?? throw new InvalidOperationException("Client URL is not configured.");
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("BlazorClient", policy =>
+    {
+        policy.WithOrigins(clientUrl).AllowAnyHeader().AllowAnyMethod();
+    });
+});
+
 // Hasher has no state and it doesn´t use db, so only one instance is enough for the app
 builder.Services.AddSingleton<IPasswordHasher<User>, PasswordHasher<User>>();
 
@@ -55,10 +64,9 @@ builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 builder.Services.AddProblemDetails();
 
 
-var secret = builder.Configuration["Jwt:Key"];
-if (secret is null) throw new InvalidOperationException("JWT key is not configured.");
+var secret = builder.Configuration["Jwt:Key"] ?? throw new InvalidOperationException("JWT key is not configured.");
 
-SymmetricSecurityKey securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secret));
+SymmetricSecurityKey securityKey = new(Encoding.UTF8.GetBytes(secret));
 
 
 builder.Services
@@ -79,8 +87,6 @@ builder.Services
 builder.Services.AddAuthorization();
 
 var app = builder.Build();
-
-
 
 
 using (var scope = app.Services.CreateScope())
@@ -106,6 +112,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseCors("BlazorClient");
 
 app.UseAuthentication();
 

@@ -27,13 +27,13 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost("login")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType<LoginResponseDto>(StatusCodes.Status200OK)]
     [ProducesResponseType<ValidationProblemDetails>(StatusCodes.Status400BadRequest)]
     [ProducesResponseType<string>(StatusCodes.Status401Unauthorized)]
     public async Task<IActionResult> LoginUser(LoginRequestDto dto)
     {
         var token = await _service.LoginUserAsync(dto);
-        return token != null ? Ok(new { token }) : Unauthorized("Invalid username or password.");
+        return token != null ? Ok(new LoginResponseDto(token)) : Unauthorized("Invalid username or password.");
     }
 }
 

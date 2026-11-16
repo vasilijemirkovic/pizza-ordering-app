@@ -20,13 +20,11 @@
 
         if (response.IsSuccessStatusCode)
         {
-            NavigationManager.NavigateTo("/login", false);
+            NavigationManager.NavigateTo("/login");
         }
         else
         {
             errorMessage = await response.Content.ReadAsStringAsync();
         }
-
-        return;
     }
 }

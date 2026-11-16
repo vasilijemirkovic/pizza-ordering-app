@@ -7,15 +7,16 @@
 
 <PageTitle>Home</PageTitle>
 
-<EditForm Model="...", OnValidSubmit="HandleRegisterAsync"></EditForm>
-    <DataAnnotationsValidator/> 
+<EditForm Model="..." , OnValidSubmit="HandleRegisterAsync"></EditForm>
+<DataAnnotationsValidator />
 
-    @code {
-        private RegisterRequestDto registerRequestDto = new();
+@code {
+    private RegisterRequestDto registerRequestDto = new();
+    private string? errorMessage;
 
     private async Task HandleRegisterAsync()
     {
-        var response = await Http.PostAsJsonAsync("/register", registerRequestDto);
+        var response = await Http.PostAsJsonAsync("Auth/register", registerRequestDto);
 
         if (response.IsSuccessStatusCode)
         {
@@ -23,7 +24,7 @@
         }
         else
         {
-            var errorMessage = response.Content.ReadAsStringAsync();
+            errorMessage = await response.Content.ReadAsStringAsync();
         }
 
         return;

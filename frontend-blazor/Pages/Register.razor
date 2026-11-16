@@ -1,0 +1,31 @@
+@page "/register"
+
+@using ContosoPizza.Shared.Dtos
+
+@inject HttpClient Http
+@inject NavigationManager NavigationManager
+
+<PageTitle>Home</PageTitle>
+
+<EditForm Model="...", OnValidSubmit="..."></EditForm>
+    <DataAnnotationsValidator/> 
+
+    @code {
+        private RegisterRequestDto registerRequestDto = new();
+
+    protected override async Task OnValidSubmit()
+    {
+        var response = await Http.PostAsJsonAsync("/register", registerRequestDto);
+
+        if (response.IsSuccessStatusCode)
+        {
+            NavigationManager.NavigateTo("/login", false);
+        }
+        else
+        {
+            var errorMessage = response.Content.ReadAsStringAsync();
+        }
+
+        return;
+    }
+}

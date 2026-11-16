@@ -7,13 +7,13 @@
 
 <PageTitle>Home</PageTitle>
 
-<EditForm Model="...", OnValidSubmit="..."></EditForm>
+<EditForm Model="...", OnValidSubmit="HandleRegisterAsync"></EditForm>
     <DataAnnotationsValidator/> 
 
     @code {
         private RegisterRequestDto registerRequestDto = new();
 
-    protected override async Task OnValidSubmit()
+    private async Task HandleRegisterAsync()
     {
         var response = await Http.PostAsJsonAsync("/register", registerRequestDto);
 

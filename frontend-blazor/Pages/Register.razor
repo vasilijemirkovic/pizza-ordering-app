@@ -1,14 +1,36 @@
 @page "/register"
 
-@using ContosoPizza.Shared.Dtos
-
 @inject HttpClient Http
 @inject NavigationManager NavigationManager
 
-<PageTitle>Home</PageTitle>
+<PageTitle>Register</PageTitle>
 
-<EditForm Model="registerRequestDto" OnValidSubmit="HandleRegisterAsync"></EditForm>
-<DataAnnotationsValidator />
+<h3>Register</h3>
+
+@if (errorMessage is not null)
+{
+    <div class="alert alert-danger">@errorMessage</div>
+}
+
+<EditForm Model="registerRequestDto" OnValidSubmit="HandleRegisterAsync">
+    <DataAnnotationsValidator />
+
+    <div class="mb-3">
+        <label>Username</label>
+        <InputText @bind-Value="registerRequestDto.Username" class="form-control" placeholder="Enter your username">
+            <ValidationMessage For="() => registerRequestDto.Username" />
+
+        </div>
+
+        <div class="mb-3">
+            <label>Password</label>
+            <InputText type="password" class="form-control" placeholder="Enter your password">
+                <ValidationMessage For="() => registerRequestDto.Password" />
+            </div>
+
+            <button type="submit" btn btn-primary>Register</button>
+
+        </EditForm>
 
 @code {
     private RegisterRequestDto registerRequestDto = new();

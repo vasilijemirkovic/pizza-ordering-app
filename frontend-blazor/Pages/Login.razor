@@ -1,0 +1,58 @@
+@page "/login"
+
+@inject HttpClient Http
+@inject NavigationManager NavigationManager
+
+<PageTitle>Login</PageTitle>
+
+<h3>Login</h3>
+
+@if (errorMessage is not null)
+{
+    <div class="alert alert-danger">@errorMessage</div>
+}
+@if (token is not null)
+{
+    <div style="word-break: break-all;">@token</div>
+}
+
+<EditForm Model="loginRequestDto" OnValidSubmit="HandleRegisterAsync">
+    <DataAnnotationsValidator />
+
+    <div class="mb-3">
+        <label>Username</label>
+        <InputText @bind-Value="loginRequestDto.Username" class="form-control" placeholder="Enter your username" />
+        <ValidationMessage For="() => loginRequestDto.Username" />
+
+    </div>
+
+    <div class="mb-3">
+        <label>Password</label>
+        <InputText type="password" class="form-control" placeholder="Enter your password" />
+        <ValidationMessage For="() => loginRequestDto.Password" />
+    </div>
+
+    <button type="submit" btn btn-primary>Login</button>
+
+</EditForm>
+
+@code {
+    private LoginRequestDto loginRequestDto = new();
+    private string? errorMessage;
+    private string? token;
+
+    private async Task HandleRegisterAsync()
+    {
+        var response = await Http.PostAsJsonAsync("Auth/login", loginRequestDto);
+
+        if (response.IsSuccessStatusCode)
+        {
+            var result = await response.Content.ReadFromJsonAsync<LoginResponseDto>();
+            token = result?.Token;
+        }
+        else
+        {
+            errorMessage = await response.Content.ReadAsStringAsync();
+        }
+    }
+}

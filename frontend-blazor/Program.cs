@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using ContosoPizza.Client;
+using ContosoPizza.Client.Services;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
@@ -10,5 +11,7 @@ var apiUri = builder.Configuration["ApiBaseUrl"];
 if (apiUri is null) throw new InvalidOperationException("API URL is not configured.");
 
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(apiUri) });
+
+builder.Services.AddScoped<ITokenStorage, TokenStorage>();
 
 await builder.Build().RunAsync();

@@ -24,7 +24,7 @@
 
     <div class="mb-3">
         <label>Password</label>
-        <InputText type="password" class="form-control" placeholder="Enter your password" />
+        <InputText @bind-Value="registerRequestDto.Password" type="password" class="form-control" placeholder="Enter your password" />
         <ValidationMessage For="() => registerRequestDto.Password" />
     </div>
 

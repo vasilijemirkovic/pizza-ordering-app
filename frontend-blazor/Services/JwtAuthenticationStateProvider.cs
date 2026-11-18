@@ -6,7 +6,6 @@ namespace ContosoPizza.Client.Services;
 
 public class JwtAuthenticationStateProvider : AuthenticationStateProvider
 {
-
     private readonly ITokenStorage _tokenStorage;
 
     public JwtAuthenticationStateProvider(ITokenStorage tokenStorage)
@@ -23,7 +22,17 @@ public class JwtAuthenticationStateProvider : AuthenticationStateProvider
             return Anonymous();
         }
 
-        var jwt = new JwtSecurityTokenHandler().ReadJwtToken(token);
+        JwtSecurityToken jwt;
+
+        try
+        {
+            jwt = new JwtSecurityTokenHandler().ReadJwtToken(token);
+        }
+        catch (Exception)
+        {
+            await _tokenStorage.DeleteTokenAsync();
+            return Anonymous();
+        }
 
         if (jwt.ValidTo < DateTime.UtcNow)
         {

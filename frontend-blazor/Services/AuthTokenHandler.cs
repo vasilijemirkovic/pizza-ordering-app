@@ -15,7 +15,7 @@ public class AuthTokenHandler : DelegatingHandler
     {
         var token = await _tokenStorage.ReadTokenAsync();
 
-        if (token is not null)
+        if (!string.IsNullOrEmpty(token))
         {
             request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
         }

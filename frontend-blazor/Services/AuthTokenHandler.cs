@@ -4,7 +4,7 @@ namespace ContosoPizza.Client.Services;
 
 public class AuthTokenHandler : DelegatingHandler
 {
-    ITokenStorage _tokenStorage;
+    private readonly ITokenStorage _tokenStorage;
 
     public AuthTokenHandler(ITokenStorage tokenStorage)
     {

@@ -1,8 +1,7 @@
 @page "/pizzas"
-@using ContosoPizza.Shared.Dtos
 
 @inject HttpClient Http
-@inject IJSRuntime JSRuntime;
+@inject IJSRuntime JSRuntime
 
 
 <PageTitle>Pizzas</PageTitle>
@@ -38,14 +37,17 @@ else
                     <td>@(pizza.IsGlutenFree ? "Yes" : "No")</td>
                     <td>@(string.Join(", ", pizza.Ingredients))</td>
                     <AuthorizeView Roles="Admin">
-                        <td> <button type="submit" class="btn btn-danger btn-sm"
-                                         @onclick="() => DeleteAsync(pizza.Id)">Delete</button> </td>
-                        </AuthorizeView>
-                    </tr>
-                }
-            </tbody>
-        </table>
-    }
+                        <td>
+                            <button type="button" class="btn btn-danger btn-sm" @onclick="() => DeleteAsync(pizza.Id)">
+                                Delete
+                            </button>
+                        </td>
+                    </AuthorizeView>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
 
 @code {
     private List<PizzaResponseDto>? pizzas;
@@ -56,24 +58,23 @@ else
         pizzas = await Http.GetFromJsonAsync<List<PizzaResponseDto>>("Pizza");
     }
 
-    private async Task DeleteAsync(int Id)
+    private async Task DeleteAsync(int id)
     {
-        var response = await Http.DeleteAsync("/Pizza/" + Id.ToString());
-        if (pizzas is not null)
+        bool confirmed = await JSRuntime.InvokeAsync<bool>("confirm", "Are you sure you want to delete this pizza?");
+        if (!confirmed) return;
+
+        var response = await Http.DeleteAsync($"Pizza/{id}");
+        if (response.IsSuccessStatusCode)
         {
-            bool deletePizza = await JSRuntime.InvokeAsync<bool>("confirm", "...");
-            if (deletePizza)
-            {
-                pizzas.RemoveAll(eachPizza => eachPizza.Id == Id);
-            }
-            else
-            {
-                return;
-            }
+            pizzas?.RemoveAll(eachPizza => eachPizza.Id == id);
+            errorMessage = null;
         }
         else
         {
-            errorMessage = await response.Content.ReadAsStringAsync();
+            var message = await response.Content.ReadAsStringAsync();
+            errorMessage = string.IsNullOrEmpty(message)
+                ? $"Delete failed ({(int)response.StatusCode})."
+                : message;
         }
     }
 }

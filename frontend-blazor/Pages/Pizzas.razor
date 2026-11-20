@@ -20,20 +20,27 @@ else
                 <th>Name</th>
                 <th>Gluten-free</th>
                 <th>Ingredients</th>
+                <AuthorizeView Roles="Admin">
+                    <th>Actions</th>
+                </AuthorizeView>
             </tr>
         </thead>
         <tbody>
-            @foreach (var pizza in pizzas)
+            @foreach (PizzaResponseDto pizza in pizzas)
             {
                 <tr>
                     <td>@pizza.Name</td>
                     <td>@(pizza.IsGlutenFree ? "Yes" : "No")</td>
                     <td>@(string.Join(", ", pizza.Ingredients))</td>
-                </tr>
-            }
-        </tbody>
-    </table>
-}
+                    <AuthorizeView Roles="Admin">
+                        <td> <button type="submit" class="btn btn-danger btn-sm"
+                                         @onclick="() => DeleteAsync(pizza.Id)">Delete</button> </td>
+                        </AuthorizeView>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
 
 @code {
     private List<PizzaResponseDto>? pizzas;
@@ -41,5 +48,14 @@ else
     protected override async Task OnInitializedAsync()
     {
         pizzas = await Http.GetFromJsonAsync<List<PizzaResponseDto>>("Pizza");
+    }
+
+    private async Task DeleteAsync(int Id)
+    {
+        var response = await Http.DeleteAsync("/Pizza/" + Id.ToString());
+        if (pizzas is not null)
+        {
+            pizzas.RemoveAll(eachPizza => eachPizza.Id == Id);
+        }
     }
 }

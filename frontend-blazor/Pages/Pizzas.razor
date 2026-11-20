@@ -7,6 +7,10 @@
 <PageTitle>Pizzas</PageTitle>
 
 <h3>Pizzas</h3>
+@if (errorMessage is not null)
+{
+    <div class="alert alert-danger">@errorMessage</div>
+}
 
 @if (pizzas is null)
 {
@@ -44,6 +48,7 @@ else
 
 @code {
     private List<PizzaResponseDto>? pizzas;
+    private string? errorMessage;
 
     protected override async Task OnInitializedAsync()
     {
@@ -56,6 +61,10 @@ else
         if (pizzas is not null)
         {
             pizzas.RemoveAll(eachPizza => eachPizza.Id == Id);
+        }
+        else
+        {
+            errorMessage = await response.Content.ReadAsStringAsync();
         }
     }
 }

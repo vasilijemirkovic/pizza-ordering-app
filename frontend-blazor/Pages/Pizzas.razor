@@ -2,6 +2,7 @@
 @using ContosoPizza.Shared.Dtos
 
 @inject HttpClient Http
+@inject IJSRuntime JSRuntime;
 
 
 <PageTitle>Pizzas</PageTitle>
@@ -60,7 +61,15 @@ else
         var response = await Http.DeleteAsync("/Pizza/" + Id.ToString());
         if (pizzas is not null)
         {
-            pizzas.RemoveAll(eachPizza => eachPizza.Id == Id);
+            bool deletePizza = await JSRuntime.InvokeAsync<bool>("confirm", "...");
+            if (deletePizza)
+            {
+                pizzas.RemoveAll(eachPizza => eachPizza.Id == Id);
+            }
+            else
+            {
+                return;
+            }
         }
         else
         {

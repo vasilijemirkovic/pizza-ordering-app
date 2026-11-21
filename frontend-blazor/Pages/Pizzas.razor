@@ -18,6 +18,9 @@
 }
 else
 {
+    <AuthorizeView Roles="Admin">
+        <a class="btn btn-primary mb-3" href="pizzas/new">Add pizza</a>
+    </AuthorizeView>
     <table class="table">
         <thead>
             <tr>

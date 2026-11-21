@@ -1,0 +1,69 @@
+@page "/pizzas/new"
+
+@attribute [Authorize(Roles = "Admin")]
+
+@inject HttpClient Http
+@inject NavigationManager NavigationManager
+
+<PageTitle>Add pizza</PageTitle>
+
+<h3>Add new pizza</h3>
+
+@if (errorMessage is not null)
+{
+    <div class="alert alert-danger">@errorMessage</div>
+}
+<EditForm Model="pizzaRequestDto" OnValidSubmit="HandleAddAsync">
+    <DataAnnotationsValidator />
+
+    <div class="mb-3">
+        <label>Name</label>
+        <InputText @bind-Value="pizzaRequestDto.Name" class="form-control" />
+        <ValidationMessage For="() => pizzaRequestDto.Name" />
+    </div>
+
+    <div class="mb-3 form-check">
+        <InputCheckbox @bind-Value="pizzaRequestDto.IsGlutenFree" class="form-check-input" />
+        <label class="form-check-label">Gluten-free</label>
+    </div>
+
+    <div class="mb-3">
+        <label>Ingredients (comma-separated)</label>
+        <InputText @bind-Value="ingredientsText" class="form-control" placeholder="tomato, mozzarella, basil" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Add</button>
+</EditForm>
+
+@code {
+    private PizzaRequestDto pizzaRequestDto = new();
+    private string ingredientsText = string.Empty;
+    private string? errorMessage;
+
+    private async Task HandleAddAsync()
+    {
+        errorMessage = null;
+        pizzaRequestDto.Ingredients = ingredientsText.Split(',', StringSplitOptions.RemoveEmptyEntries |
+StringSplitOptions.TrimEntries).ToList();
+
+        if (pizzaRequestDto.Ingredients.Count > 5)
+        {
+            errorMessage = "There are more than 5 ingredients in the list!";
+            return;
+        }
+
+        var response = await Http.PostAsJsonAsync("Pizza", pizzaRequestDto);
+
+        if (response.IsSuccessStatusCode)
+        {
+            NavigationManager.NavigateTo("/pizzas");
+        }
+        else
+        {
+            var message = await response.Content.ReadAsStringAsync();
+            errorMessage = string.IsNullOrEmpty(message)
+                ? $"Delete failed ({(int)response.StatusCode})."
+                : message;
+        }
+    }
+}

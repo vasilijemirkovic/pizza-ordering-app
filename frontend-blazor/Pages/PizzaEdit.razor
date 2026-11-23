@@ -1,19 +1,19 @@
 @page "/pizzas/new"
-
+@page "/pizzas/edit/{Id:int}"
 @attribute [Authorize(Roles = "Admin")]
 
 @inject HttpClient Http
 @inject NavigationManager NavigationManager
 
-<PageTitle>Add pizza</PageTitle>
+<PageTitle>@(Id is null ? "Add new pizza" : "Edit pizza")</PageTitle>
 
-<h3>Add new pizza</h3>
+<h3> @(Id is null ? "Add new pizza" : "Edit pizza")</h3>
 
 @if (errorMessage is not null)
 {
     <div class="alert alert-danger">@errorMessage</div>
 }
-<EditForm Model="pizzaRequestDto" OnValidSubmit="HandleAddAsync">
+<EditForm Model="pizzaRequestDto" OnValidSubmit="HandleSubmitAsync">
     <DataAnnotationsValidator />
 
     <div class="mb-3">
@@ -34,19 +34,55 @@
         <ValidationMessage For="() => pizzaRequestDto.Ingredients" />
     </div>
 
-    <button type="submit" class="btn btn-primary">Add</button>
+    <button type="submit" class="btn btn-primary">@(Id is null ? "Add" : "Save")</button>
 </EditForm>
 
 @code {
     private PizzaRequestDto pizzaRequestDto = new();
     private string ingredientsText = string.Empty;
     private string? errorMessage;
+    [Parameter] public int? Id { get; set; }
 
-    private async Task HandleAddAsync()
+    protected override async Task OnInitializedAsync()
+    {
+        if (Id is null)
+        {
+            return;
+        }
+
+        var response = await Http.GetAsync($"Pizza/{Id}");
+        if (!response.IsSuccessStatusCode)
+        {
+            errorMessage = "Pizza not found!";
+            return;
+        }
+
+        var pizza = await response.Content.ReadFromJsonAsync<PizzaResponseDto>();
+
+        pizzaRequestDto = new PizzaRequestDto
+        {
+            Name = pizza!.Name,
+            IsGlutenFree = pizza.IsGlutenFree,
+            Ingredients = pizza.Ingredients
+        };
+        ingredientsText = string.Join(", ", pizza!.Ingredients);
+        
+    }
+
+    private async Task HandleSubmitAsync()
     {
         errorMessage = null;
 
-        var response = await Http.PostAsJsonAsync("Pizza", pizzaRequestDto);
+        HttpResponseMessage response;
+
+        if (Id is null)
+        {
+            response = await Http.PostAsJsonAsync("Pizza", pizzaRequestDto);
+        }
+        else
+        {
+            response = await Http.PutAsJsonAsync($"Pizza/{Id}", pizzaRequestDto);
+        }
 
         if (response.IsSuccessStatusCode)
         {
@@ -56,7 +92,7 @@
         {
             var message = await response.Content.ReadAsStringAsync();
             errorMessage = string.IsNullOrEmpty(message)
-                ? $"Delete failed ({(int)response.StatusCode})."
+                ? $"Saving failed ({(int)response.StatusCode})."
                 : message;
         }
     }

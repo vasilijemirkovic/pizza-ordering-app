@@ -1,7 +1,20 @@
 ﻿@page "/"
 
-<PageTitle>Home</PageTitle>
+<PageTitle>Pizza Ordering App</PageTitle>
 
-<h1>Hello, world!</h1>
+<h1>Welcome to Pizza Ordering App</h1>
 
-Welcome to your new app.
+<p>Browse our pizza menu. Administrators can add, edit and delete pizzas..</p>
+
+<AuthorizeView>
+    <Authorized>
+        <div>
+            <p>Welcome back @context.User.Identity?.Name!</p>
+            <a class="btn btn-primary" href="/pizzas">Browse pizzas</a>
+        </div>
+    </Authorized>
+    <NotAuthorized>
+        <a class="btn btn-primary me-2" href="/register">Register</a>
+        <a class="btn btn-outline-primary" href="/login">Login</a>
+    </NotAuthorized>
+</AuthorizeView>

@@ -41,6 +41,7 @@ else
                     <td>@(string.Join(", ", pizza.Ingredients))</td>
                     <AuthorizeView Roles="Admin">
                         <td>
+                            <a class="btn btn-secondary btn-sm me-1" href="pizzas/edit/@pizza.Id">Edit</a>
                             <button type="button" class="btn btn-danger btn-sm" @onclick="() => DeleteAsync(pizza.Id)">
                                 Delete
                             </button>

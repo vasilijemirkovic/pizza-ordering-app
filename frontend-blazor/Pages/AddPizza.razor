@@ -29,7 +29,9 @@
 
     <div class="mb-3">
         <label>Ingredients (comma-separated)</label>
-        <InputText @bind-Value="ingredientsText" class="form-control" placeholder="tomato, mozzarella, basil" />
+        <InputText @bind-Value="ingredientsText" @bind-Value:after="UpdateIngredients" class="form-control"
+                   placeholder="tomato, mozzarella, basil" />
+        <ValidationMessage For="() => pizzaRequestDto.Ingredients" />
     </div>
 
     <button type="submit" class="btn btn-primary">Add</button>
@@ -43,14 +45,6 @@
     private async Task HandleAddAsync()
     {
         errorMessage = null;
-        pizzaRequestDto.Ingredients = ingredientsText.Split(',', StringSplitOptions.RemoveEmptyEntries |
-StringSplitOptions.TrimEntries).ToList();
-
-        if (pizzaRequestDto.Ingredients.Count > 5)
-        {
-            errorMessage = "There are more than 5 ingredients in the list!";
-            return;
-        }
 
         var response = await Http.PostAsJsonAsync("Pizza", pizzaRequestDto);
 
@@ -65,5 +59,10 @@ StringSplitOptions.TrimEntries).ToList();
                 ? $"Delete failed ({(int)response.StatusCode})."
                 : message;
         }
+    }
+    private void UpdateIngredients()
+    {
+        pizzaRequestDto.Ingredients = ingredientsText.Split(',', StringSplitOptions.RemoveEmptyEntries |
+StringSplitOptions.TrimEntries).ToList();
     }
 }

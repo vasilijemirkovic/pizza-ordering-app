@@ -7,59 +7,75 @@
 <PageTitle>Pizzas</PageTitle>
 
 <h3>Pizzas</h3>
+
 @if (errorMessage is not null)
 {
     <div class="alert alert-danger">@errorMessage</div>
 }
 
-@if (pizzas is null)
+@if (pizzas is null && errorMessage is null)
 {
     <p><em>Loading...</em></p>
 }
-else
+
+else if (pizzas is not null)
 {
     <AuthorizeView Roles="Admin">
         <a class="btn btn-primary mb-3" href="pizzas/new">Add pizza</a>
     </AuthorizeView>
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>Gluten-free</th>
-                <th>Ingredients</th>
-                <AuthorizeView Roles="Admin">
-                    <th>Actions</th>
-                </AuthorizeView>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (PizzaResponseDto pizza in pizzas)
-            {
+
+    @if (pizzas.Count == 0)
+    {
+        <p>No pizzas on the menu yet.</p>
+    }
+    else
+    {
+        <table class="table">
+            <thead>
                 <tr>
-                    <td>@pizza.Name</td>
-                    <td>@(pizza.IsGlutenFree ? "Yes" : "No")</td>
-                    <td>@(string.Join(", ", pizza.Ingredients))</td>
+                    <th>Name</th>
+                    <th>Gluten-free</th>
+                    <th>Ingredients</th>
                     <AuthorizeView Roles="Admin">
-                        <td>
-                            <a class="btn btn-secondary btn-sm me-1" href="pizzas/edit/@pizza.Id">Edit</a>
-                            <button type="button" class="btn btn-danger btn-sm" @onclick="() => DeleteAsync(pizza.Id)">
-                                Delete
-                            </button>
-                        </td>
+                        <th>Actions</th>
                     </AuthorizeView>
                 </tr>
-            }
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                @foreach (PizzaResponseDto pizza in pizzas)
+                {
+                    <tr>
+                        <td>@pizza.Name</td>
+                        <td>@(pizza.IsGlutenFree ? "Yes" : "No")</td>
+                        <td>@(string.Join(", ", pizza.Ingredients))</td>
+                        <AuthorizeView Roles="Admin">
+                            <td>
+                                <a class="btn btn-secondary btn-sm me-1" href="pizzas/edit/@pizza.Id">Edit</a>
+                                <button type="button" class="btn btn-danger btn-sm" @onclick="() => DeleteAsync(pizza.Id)">
+                                    Delete
+                                </button>
+                            </td>
+                        </AuthorizeView>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
 }
-
 @code {
     private List<PizzaResponseDto>? pizzas;
     private string? errorMessage;
 
     protected override async Task OnInitializedAsync()
     {
-        pizzas = await Http.GetFromJsonAsync<List<PizzaResponseDto>>("Pizza");
+        try
+        {
+            pizzas = await Http.GetFromJsonAsync<List<PizzaResponseDto>>("Pizza");
+        }
+        catch (HttpRequestException)
+        {
+            errorMessage = "Could not load pizzas. Please try again later!";
+        }
     }
 
     private async Task DeleteAsync(int id)

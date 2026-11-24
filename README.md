@@ -126,6 +126,12 @@ Tokens expire after 45 minutes. Requests without a valid token return `401 Unaut
 └── ContosoPizza.slnx  # Solution file
 ```
 
+## Screenshots
+
+![Pizza list as admin](api/docs/screenshots/pizza-list.png)
+![Edit pizza](api/docs/screenshots/edit-pizza.png)
+![Delete pizza](api/docs/screenshots/delete-pizza.png)
+
 ## Roadmap
 - [x] Unit and integration tests with xUnit
 - [x] Blazor WebAssembly client

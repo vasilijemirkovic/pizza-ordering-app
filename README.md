@@ -26,6 +26,8 @@ A frontend client is currently in progress.
 - ASP.NET Core Identity `PasswordHasher` (PBKDF2)
 - Swagger / Swashbuckle
 - xUnit
+- Blazor WebAssembly
+- Bootstrap 5, Bootstrap Icons
 
 ## Getting Started
 

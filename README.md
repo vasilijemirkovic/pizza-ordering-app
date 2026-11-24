@@ -1,7 +1,6 @@
 # Pizza Ordering App
 
-A REST API for a pizza shop, built with ASP.NET Core. Anyone can browse the menu, while only administrators can add, update or delete pizzas. Users can register and log in using JWT-based authentication.
-
+A full-stack pizza menu application built with **ASP.NET Core Web API** and a **Blazor WebAssembly** client. Anyone can browse the menu, users can register and log in, and administrators can add, edit and delete pizzas. Authentication is based on JWT with role-based authorization.
 A frontend client is currently in progress.
 
 ## Features
@@ -14,6 +13,11 @@ A frontend client is currently in progress.
 - Global exception handling with standardized `ProblemDetails` responses
 - Automatic admin account seeding on startup, configured through user secrets
 - Swagger UI with JWT support for testing protected endpoints
+- Blazor WebAssembly client: pizza list, registration, login and logout
+- Admin-only UI for adding, editing and deleting pizzas, with protected pages
+- JWT stored in the browser and attached to API requests automatically (`DelegatingHandler`)
+- Shared DTO project used by both API and client, so validation rules apply on both sides
+- Friendly error handling when the API is unreachable
 
 ## Tech Stack
 - .NET 10 / ASP.NET Core Web API

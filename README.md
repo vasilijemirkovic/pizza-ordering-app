@@ -126,11 +126,10 @@ Tokens expire after 45 minutes. Requests without a valid token return `401 Unaut
 └── ContosoPizza.slnx  # Solution file
 ```
 
-**Project structure is going to be changed after the implementation of the unit tests.**
-
 ## Roadmap
-- [x] Unit tests with xUnit
-- [ ] Frontend client
+- [x] Unit and integration tests with xUnit
+- [x] Blazor WebAssembly client
+- [ ] Angular client consuming the same API
 - [ ] Deployment
 
 ## Acknowledgements

@@ -60,7 +60,14 @@ A frontend client is currently in progress.
    ```
    The SQLite database is created and all migrations are applied automatically on startup.
 
-4. Open Swagger UI at `http://localhost:5153/swagger`.
+4. In a second terminal, run the Blazor client:
+   ```
+   cd frontend-blazor
+   dotnet run
+   ```
+   Open the client at `http://localhost:5085`. The API must be running at the same time.
+
+The client reads the API address from `frontend-blazor/wwwroot/appsettings.json` (`ApiBaseUrl`), and the API allows requests from the client through CORS (`ClientUrl` in `api/appsettings.json`). If you change a port, update both values.
 
 
 ## Testing
